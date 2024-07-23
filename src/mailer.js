@@ -20,7 +20,6 @@ async function sendMail(mailOptions) {
 		console.log('Successful sends: ', info.accepted)
 		console.log('Failed sends: ', info.rejected)
 	} catch (error) {
-		console.log(JSON.stringify(error))
 		throw new Error({error, code: responseCodes.SERVER_ERROR})
 	}
 }

@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 const { 
     registerUser,
-    loginUser
+    loginUser,
+    resetPassword
 } = require("../db/mongo/userModel");
 const responseCodes = require('../responseCodes')
 const ServerErrorResponse = require('../models/ServerErrorResponse')
@@ -29,6 +30,16 @@ router.post('/login', (req, res) => {
         ))
 })
 
+router.put('/reset-password', (req, res) => {
+    const { email, newPassword } = req.body
+    resetPassword(email, newPassword)
+        .then(updatedUser => {console.log(updatedUser); res.json(new ServerDataResponse(responseCodes.OK, updatedUser).generateResponseJson())})
+        .catch(error => {console.log(error); res.json(
+            new ServerErrorResponse(responseCodes.SERVER_ERROR, `Error - ${error.error}`)
+            .generateResponseJson()
+        )})
+})
+
 router.post('/forgot-password-request', (req, res) => {
     const mailOptions = {
         from: "Taskify",
@@ -38,8 +49,8 @@ router.post('/forgot-password-request', (req, res) => {
             <h3>Password reset request</h3>
             <br/>
             <p>
-                This is a password reset request message for <u>${req.body?.email}</u>.
-                Click <a href="${environment?.baseUrl}${CREATE_PASSWORD_ROUTE}">here</a> to start password reset process:
+                This is a password reset request message for <u>${req.body?.email}</u>.<br/>
+                Click <a href="${environment?.baseUrl}${CREATE_PASSWORD_ROUTE}?fromUser=${req.body?.email}">here</a> to start password reset process
                 <br/>
             </p>
         `

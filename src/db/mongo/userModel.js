@@ -35,41 +35,40 @@ userSchema.methods.validatePassword = function(password) {
 
 const userModel = mongoose.model('users', userSchema)
 
-async function registerUser(username, password) {
+async function registerUser(username, password, email) {
     const user = await userModel.findOne({ username })
     if (user === null) { // the new user doesn't exist
-        const newUser = new userModel({ username })
+        const newUser = new userModel({ username, email })
         newUser.password = newUser.generatePasswordHash(password)
         return mongoResultToJson(await newUser.save())
     } else {
-        throw new Error('User already exists')
+        throw 'User already exists'
     }
 }
 
-function loginUser(username, password) {
-    return new Promise((resolve, reject) => {
-        console.log(username)
-        userModel.findOne({ username })
-            .then(user => {
-                if (user === null) {
-                    reject({error: 'No user found', code: responseCodes.NOT_FOUND})
-                }
+async function loginUser(username, password) {
+    const user = await userModel.findOne({ username })
+    if (user === null) {
+        throw {error: 'No user found', code: responseCodes.NOT_FOUND}
+    }
 
-                if (user.validatePassword(password)) {
-                    const userData = { username }
-                    const accessToken = jwt.sign(userData, process.env.ACCESS_TOKEN_SECRET)
-                    resolve({ token: accessToken, user: mongoResultToJson(user) })
-                } else {
-                    reject({error: 'User unauthorized', code: responseCodes.UNAUTHORIZED})
-                }
-            })
-            .catch(error => reject({error, code: responseCodes.SERVER_ERROR}))
-    })
+    if (user.validatePassword(password)) {
+        const userData = { username }
+        const accessToken = jwt.sign(userData, process.env.ACCESS_TOKEN_SECRET)
+        return { token: accessToken, user: mongoResultToJson(user) }
+    } else {
+        throw {error: 'User unauthorized', code: responseCodes.UNAUTHORIZED}
+    }
+}
+
+async function resetPassword(email, newPassword) {
+    const userToUpdate = await userModel.findOne({ email })
+    userToUpdate.password = userToUpdate.generatePasswordHash(newPassword)
+    return userToUpdate.save()
 }
 
 module.exports = {
     registerUser,
-    loginUser
+    loginUser,
+    resetPassword
 }
-
-// twillo 2FA recovery code: Z2WLRFSWA3X23RPWJR8QQDTC
