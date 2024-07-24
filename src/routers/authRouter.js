@@ -13,7 +13,8 @@ const environment = require("../config");
 const { CREATE_PASSWORD_ROUTE } = require("../constants");
 
 router.post('/register', (req, res) => {
-    registerUser(req.body.username, req.body.password)
+    const { username, email, password } = req.body
+    registerUser(username, password, email)
         .then(newUser => res.json(new ServerDataResponse(responseCodes.OK, newUser).generateResponseJson()))
         .catch(error => res.json(
             new ServerErrorResponse(responseCodes.SERVER_ERROR, `Error - ${error}`)
