@@ -13,7 +13,8 @@ const ServerErrorResponse = require('../models/ServerErrorResponse')
 const ServerDataResponse = require('../models/ServerDataResponse');
 
 router.get("/", (req, res) => {
-    fetchAllTasks()
+    const { userId } = req.query
+    fetchAllTasks(userId)
         .then(tasks => res.json(new ServerDataResponse(responseCodes.OK, tasks.map(task => task)).generateResponseJson()))
         .catch(error => res.json(
             new ServerErrorResponse(responseCodes.SERVER_ERROR, `Oops... something went wrong when fetching tasks - ${error}`)

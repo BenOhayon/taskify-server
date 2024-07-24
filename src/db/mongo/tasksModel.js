@@ -19,9 +19,10 @@ const taskSchema = new mongoose.Schema({
 
 const taskModel = mongoose.model('tasks', taskSchema)
 
-async function fetchAllTasks() {
+async function fetchAllTasks(userId = "") {
     try {
-        const tasks = await taskModel.find({})
+        const searchFilter = userId === "" ? {} : { userId }
+        const tasks = await taskModel.find(searchFilter)
         return mongoResultToJsonArray(tasks)
     } catch (err) {
         throw err

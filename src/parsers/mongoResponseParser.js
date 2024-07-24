@@ -1,3 +1,4 @@
+const { snakeCaseToCamelCase } = require("../utils")
 
 function parseMongoObject(obj) {
     if (!obj) return null
@@ -5,7 +6,7 @@ function parseMongoObject(obj) {
     const { _id, __v, password, ...rest } = obj
     return {
         id: _id,
-        ...rest
+        ...snakeCaseToCamelCase(rest)
     }
 }
 
