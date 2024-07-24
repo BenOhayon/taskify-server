@@ -38,9 +38,11 @@ const userModel = mongoose.model('users', userSchema)
 async function registerUser(username, password, email) {
     const user = await userModel.findOne({ username })
     if (user === null) { // the new user doesn't exist
+        const userData = { username, email }
         const newUser = new userModel({ username, email })
         newUser.password = newUser.generatePasswordHash(password)
-        return mongoResultToJson(await newUser.save())
+        const accessToken = jwt.sign(userData, process.env.ACCESS_TOKEN_SECRET)
+        return { token: accessToken, user: mongoResultToJson(await newUser.save()) }
     } else {
         throw 'User already exists'
     }
@@ -53,7 +55,7 @@ async function loginUser(username, password) {
     }
 
     if (user.validatePassword(password)) {
-        const userData = { username }
+        const userData = { username, email: user?.email }
         const accessToken = jwt.sign(userData, process.env.ACCESS_TOKEN_SECRET)
         return { token: accessToken, user: mongoResultToJson(user) }
     } else {
