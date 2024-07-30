@@ -7,7 +7,7 @@
     "contact": {
       "name": "Taskify",
       "email": "taskify4@gmail.com",
-      "url": "http://localhost:3000/api/docs"
+      "url": "http://localhost:5173/home"
     }
   },
   "servers": [
@@ -224,7 +224,7 @@
         ],
         "responses": {
           "200": {
-            "description": "User was found",
+            "description": "Task was found",
             "content": {
               "application/json": {
                 "schema": {
@@ -264,8 +264,133 @@
           }
         },
         "responses": {
+          "201": {
+            "description": "Task was created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Task"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/tasks/{id}": {
+      "get": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "Fetches a specific task",
+        "description": "Fetches a specific task.",
+        "operationId": "get-task",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The ID of the requested task"
+          }
+        ],
+        "responses": {
           "200": {
-            "description": "User was found",
+            "description": "Task was found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Task"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "Updates a specific task",
+        "description": "Updates a specific task.",
+        "operationId": "update-task",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The ID of the requested task"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Task was updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Task"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "Deletes a specific task",
+        "description": "Deletes a specific task.",
+        "operationId": "delete-task",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The ID of the requested task"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Task was deleted",
             "content": {
               "application/json": {
                 "schema": {

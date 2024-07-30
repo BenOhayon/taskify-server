@@ -29,14 +29,6 @@ async function fetchAllTasks(userId = "") {
     }
 }
 
-function fetchTasksByProps(propsObject) {
-    return new Promise((resolve, reject) => {
-        taskModel.find(propsObject)
-            .then(tasks => resolve(mongoResultToJsonArray(tasks)))
-            .catch(reject)
-    })
-}
-
 function fetchTaskById(taskId) {
     return new Promise((resolve, reject) => {
         taskModel.findById(taskId)
@@ -67,7 +59,6 @@ async function updateTask(taskId, data) {
 
 module.exports = {
     fetchAllTasks,
-    fetchTasksByProps,
     fetchTaskById,
     createNewTask,
     updateTask,
