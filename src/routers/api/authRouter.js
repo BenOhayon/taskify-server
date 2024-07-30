@@ -12,6 +12,17 @@ const { sendMail } = require("../../mailer");
 const environment = require("../../config");
 const { CREATE_PASSWORD_ROUTE } = require("../../constants");
 
+/**
+ * Creates a user.
+ * [POST] /api/auth/register
+ * 
+ * Body Parameters:
+ * @param username - The username of the new user
+ * @param password - The password of the new user
+ * @param email - The email of the new user
+ * 
+ * For more info and testing, see {@link http://localhost:3000/api/docs}
+ */
 router.post('/register', (req, res) => {
     const { username, email, password } = req.body
     registerUser(username, password, email)
@@ -22,25 +33,55 @@ router.post('/register', (req, res) => {
         ))
 })
 
+/**
+ * Logs in a user.
+ * [POST] /api/auth/login
+ * 
+ * Body Parameters:
+ * @param username - The username of the requested user
+ * @param password - The password of the requested user
+ * 
+ * For more info and testing, see {@link http://localhost:3000/api/docs}
+ */
 router.post('/login', (req, res) => {
-    loginUser(req.body.username, req.body.password)
-        .then(response => res.json(new ServerDataResponse(responseCodes.OK, response).generateResponseJson()))
-        .catch(error => res.json(
+    const { username, password } = req.body
+    loginUser(username, password)
+        .then(response => res.status(responseCodes.OK).json(new ServerDataResponse(responseCodes.OK, response).generateResponseJson()))
+        .catch(error => res.status(error.code).json(
             new ServerErrorResponse(error.code, `Error - ${error}`)
             .generateResponseJson()
         ))
 })
 
+/**
+ * Updates a user's password.
+ * [PUT] /api/auth/reset-password
+ * 
+ * Body Parameters:
+ * @param email - The email of the requested user
+ * @param newPassword - The new password of the requested user
+ * 
+ * For more info and testing, see {@link http://localhost:3000/api/docs}
+ */
 router.put('/reset-password', (req, res) => {
     const { email, newPassword } = req.body
     resetPassword(email, newPassword)
-        .then(updatedUser => {console.log(updatedUser); res.json(new ServerDataResponse(responseCodes.OK, updatedUser).generateResponseJson())})
-        .catch(error => {console.log(error); res.json(
+        .then(updatedUser => res.status(responseCodes.OK).json(new ServerDataResponse(responseCodes.OK, updatedUser).generateResponseJson()))
+        .catch(error => res.status(responseCodes.SERVER_ERROR).json(
             new ServerErrorResponse(responseCodes.SERVER_ERROR, `Error - ${error.error}`)
             .generateResponseJson()
-        )})
+        ))
 })
 
+/**
+ * Sends a reset password link via email.
+ * [POST] /api/auth/forgot-password-request
+ * 
+ * Body Parameters:
+ * @param email - The email of the requested user
+ * 
+ * For more info and testing, see {@link http://localhost:3000/api/docs}
+ */
 router.post('/forgot-password-request', (req, res) => {
     const { email } = req.body
     const mailOptions = {

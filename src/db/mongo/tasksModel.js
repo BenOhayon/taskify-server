@@ -37,10 +37,11 @@ function fetchTaskById(taskId) {
     })
 }
 
-function createNewTask(taskText) {
+function createNewTask(text, userId) {
     return new Promise((resolve, reject) => {
         taskModel.create({
-            text: taskText
+            text,
+            userId
         })
             .then(task => resolve(mongoResultToJson(task)))
             .catch(reject)

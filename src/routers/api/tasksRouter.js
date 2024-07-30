@@ -10,7 +10,17 @@ const {
 const responseCodes = require('../../responseCodes')
 const ServerErrorResponse = require('../../models/ServerErrorResponse')
 const ServerDataResponse = require('../../models/ServerDataResponse');
+const environment = require('../../config')
 
+/**
+ * Fetches all the tasks of a user whose ID is 'userId'. If no ID was specified, it fetches all the tasks.
+ * [GET] /api/tasks
+ * 
+ * Query Parameters:
+ * @param userId - The ID of the user
+ * 
+ * For more info and testing, see {@link http://localhost:3000/api/docs}
+ */
 router.get("/", (req, res) => {
     const { userId } = req.query
     fetchAllTasks(userId ?? "")
@@ -21,9 +31,19 @@ router.get("/", (req, res) => {
         ))
 })
 
+/**
+ * Creates a task.
+ * [POST] /api/tasks
+ * 
+ * Body Parameters:
+ * @param text - The text of the new task
+ * @param userId - The ID of the user created the task
+ * 
+ * For more info and testing, see {@link http://localhost:3000/api/docs}
+ */
 router.post("/", (req, res) => {
-    const { text } = req.body
-    createNewTask(text)
+    const { text, userId } = req.body
+    createNewTask(text, userId)
         .then(task => res.json(new ServerDataResponse(responseCodes.CREATED, task).generateResponseJson()))
         .catch(error => res.json(
             new ServerErrorResponse(responseCodes.SERVER_ERROR, `Error - ${error}`)
@@ -33,6 +53,15 @@ router.post("/", (req, res) => {
 
 router
     .route("/:id")
+    /**
+     * Fetches a task.
+     * [GET] /api/tasks/:id
+     * 
+     * Path Parameters:
+     * @param id - The ID of the requested task
+     * 
+     * For more info and testing, see {@link http://localhost:3000/api/docs}
+     */
     .get((req, res) => {
         const { id } = req.params
         fetchTaskById(id)
@@ -48,6 +77,15 @@ router
                     .generateResponseJson())
             )
     })
+    /**
+     * Updates a task.
+     * [PUT] /api/tasks/:id
+     * 
+     * Path Parameters:
+     * @param id - The ID of the requested task
+     * 
+     * For more info and testing, see {@link http://localhost:3000/api/docs}
+     */
     .put((req, res) => {
         const { id, body } = req.body
         updateTask(id, body)
@@ -56,6 +94,15 @@ router
                 .generateResponseJson())
             )
     })
+    /**
+     * Deletes a task.
+     * [DELETE] /api/tasks/:id
+     * 
+     * Path Parameters:
+     * @param id - The ID of the requested task
+     * 
+     * For more info and testing, see {@link http://localhost:3000/api/docs}
+     */
     .delete((req, res) => {
         const { id } = req.params
         deleteTask(id)
