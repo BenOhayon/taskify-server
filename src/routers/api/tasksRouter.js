@@ -7,10 +7,10 @@ const {
     fetchTaskById,
     updateTask,
     fetchTasksByProps
-} = require("../db/mongo/tasksModel");
-const responseCodes = require('../responseCodes')
-const ServerErrorResponse = require('../models/ServerErrorResponse')
-const ServerDataResponse = require('../models/ServerDataResponse');
+} = require("../../db/mongo/tasksModel");
+const responseCodes = require('../../responseCodes')
+const ServerErrorResponse = require('../../models/ServerErrorResponse')
+const ServerDataResponse = require('../../models/ServerDataResponse');
 
 router.get("/", (req, res) => {
     const { userId } = req.query

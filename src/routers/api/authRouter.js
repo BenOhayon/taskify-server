@@ -4,13 +4,13 @@ const {
     registerUser,
     loginUser,
     resetPassword
-} = require("../db/mongo/userModel");
-const responseCodes = require('../responseCodes')
-const ServerErrorResponse = require('../models/ServerErrorResponse')
-const ServerDataResponse = require('../models/ServerDataResponse');
-const { sendMail } = require("../mailer");
-const environment = require("../config");
-const { CREATE_PASSWORD_ROUTE } = require("../constants");
+} = require("../../db/mongo/userModel");
+const responseCodes = require('../../responseCodes')
+const ServerErrorResponse = require('../../models/ServerErrorResponse')
+const ServerDataResponse = require('../../models/ServerDataResponse');
+const { sendMail } = require("../../mailer");
+const environment = require("../../config");
+const { CREATE_PASSWORD_ROUTE } = require("../../constants");
 
 router.post('/register', (req, res) => {
     const { username, email, password } = req.body
