@@ -1,3 +1,4 @@
+const responseCodes = require('../responseCodes')
 const ServerResponse = require('./ServerResponse')
 
 class ServerErrorResponse extends ServerResponse {
@@ -9,7 +10,7 @@ class ServerErrorResponse extends ServerResponse {
     generateResponseJson() {
         return {
             ...super.generateResponseJson(),
-            errorCode: this.responseCode,
+            errorCode: this.responseCode ?? responseCodes.SERVER_ERROR,
             errorMessage: this.errorMessage
         }
     }

@@ -23,15 +23,8 @@ router.get("/", (req, res) => {
 })
 
 router.post("/", (req, res) => {
-    fetchTasksByProps(req.body)
-        .then(tasks => res.json(new ServerDataResponse(responseCodes.OK, tasks.map(task => task)).generateResponseJson()))
-        .catch(error => res.json(new ServerDataResponse(responseCodes.SERVER_ERROR, `Oops... something went wrong when deleting a task - ${error}`)
-            .generateResponseJson())
-        )
-})
-
-router.post("/new", (req, res) => {
-    createNewTask(req.body.text)
+    const { text } = req.body
+    createNewTask(text)
         .then(task => res.json(new ServerDataResponse(responseCodes.CREATED, task).generateResponseJson()))
         .catch(error => res.json(
             new ServerErrorResponse(responseCodes.SERVER_ERROR, `Error - ${error}`)

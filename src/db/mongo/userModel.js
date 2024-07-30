@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 const responseCodes = require('../../responseCodes');
-const { mongoResultToJson } = require('../../utils');
+const { mongoResultToJson } = require('../../mongoUtils');
 
 const userSchema = new mongoose.Schema({
     created_at: { 
@@ -53,7 +53,6 @@ async function loginUser(username, password) {
     if (user === null) {
         throw {error: 'No user found', code: responseCodes.NOT_FOUND}
     }
-
     if (user.validatePassword(password)) {
         const userData = { username, email: user?.email }
         const accessToken = jwt.sign(userData, process.env.ACCESS_TOKEN_SECRET)

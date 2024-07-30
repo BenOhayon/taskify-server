@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const {
     mongoResultToJson,
     mongoResultToJsonArray
-} = require('../../utils')
+} = require('../../mongoUtils')
 
 const taskSchema = new mongoose.Schema({
     created_at: { 

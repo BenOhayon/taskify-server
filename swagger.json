@@ -1,0 +1,480 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "version": "1.0.0",
+    "title": "Taskify API Docs",
+    "description": "Taskify API documentation and examples",
+    "contact": {
+      "name": "Taskify",
+      "email": "taskify4@gmail.com",
+      "url": "http://localhost:3000/api/docs"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/",
+      "description": "Local server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Authentication"
+    },
+    {
+      "name": "Tasks"
+    }
+  ],
+  "paths": {
+    "/api/auth/register": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Create a new",
+        "description": "Create a new user",
+        "operationId": "register",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserBodyParams"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User was created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "User already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Logs in an existing user",
+        "description": "Logs in an existing user",
+        "operationId": "login",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User was found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/forgot-password-request": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Requests the server for password reset",
+        "description": "Sends a request to get a password reset link via email",
+        "operationId": "forgot-password",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "email": "ben1679@gmail.com"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User was found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptySuccessResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/reset-password": {
+      "put": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Resets a password of a user",
+        "description": "Resets a password of a user",
+        "operationId": "reset-password",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "email": "ben1679@gmail.com",
+                "newPassword": "123456789"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User was found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptySuccessResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/tasks/": {
+      "get": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "Fetches the all the tasks of a user",
+        "description": "Fetches the all the tasks of a user by ID. If no user ID specified, it fetches all the tasks.",
+        "operationId": "get-tasks",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The ID of the user for whom you wish to fetch its tasks"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User was found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Task"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "Creates a new task",
+        "description": "Creates a new task under a specified user",
+        "operationId": "create-task",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "text": "This is a task",
+                "userId": "663bf12b398d68a4be0a70af"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User was found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Task"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "blabla"
+          },
+          "password": {
+            "type": "string",
+            "example": "123456"
+          }
+        }
+      },
+      "UserBodyParams": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/User"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "example": "example@mail.com"
+              }
+            }
+          }
+        ]
+      },
+      "UserExtended": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/User"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "66a2420fe921f92735427f4e"
+              },
+              "email": {
+                "type": "string",
+                "example": "example@mail.com"
+              },
+              "createdAt": {
+                "type": "integer",
+                "example": 175446513548465
+              }
+            }
+          }
+        ]
+      },
+      "UserResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkJlbiIsImlhdCI6MTcxNTI2NDI3OH0.qAG9XCND4-i-XDgSpf_byKvP3dUILYSZubcVq4vBZas"
+          },
+          "user": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserExtended"
+              },
+              {
+                "type": "object"
+              }
+            ]
+          }
+        }
+      },
+      "Task": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "6631362f53c1fd1465c77f5a"
+          },
+          "text": {
+            "type": "string",
+            "example": "blabla"
+          },
+          "userId": {
+            "type": "string",
+            "example": "663bf12b398d68a4be0a70af"
+          },
+          "createAt": {
+            "type": "integer",
+            "example": 1714501178743
+          }
+        }
+      },
+      "TaskExtended": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Task"
+          },
+          {
+            "type": "object"
+          }
+        ]
+      },
+      "BasicResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "boolean"
+          },
+          "errorCode": {
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 600
+          }
+        }
+      },
+      "ErrorResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BasicResponse"
+          },
+          {
+            "type": "object",
+            "required": [
+              "rootCause"
+            ],
+            "properties": {
+              "errorMessage": {
+                "type": "string",
+                "example": "An error has occurred"
+              }
+            }
+          }
+        ]
+      },
+      "SuccessResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BasicResponse"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "object",
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/UserResponse"
+                  },
+                  {
+                    "$ref": "#/components/schemas/TaskExtended"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "EmptySuccessResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BasicResponse"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "object"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

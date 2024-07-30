@@ -15,9 +15,9 @@ const { CREATE_PASSWORD_ROUTE } = require("../constants");
 router.post('/register', (req, res) => {
     const { username, email, password } = req.body
     registerUser(username, password, email)
-        .then(newUser => res.json(new ServerDataResponse(responseCodes.OK, newUser).generateResponseJson()))
-        .catch(error => res.json(
-            new ServerErrorResponse(responseCodes.SERVER_ERROR, `Error - ${error}`)
+        .then(newUser => res.status(responseCodes.CREATED).json(new ServerDataResponse(responseCodes.CREATED, newUser).generateResponseJson()))
+        .catch(error => res.status(error.error ?? responseCodes.SERVER_ERROR).json(
+            new ServerErrorResponse(error.error ?? responseCodes.SERVER_ERROR, `Error - ${error}`)
                 .generateResponseJson()
         ))
 })
@@ -26,7 +26,7 @@ router.post('/login', (req, res) => {
     loginUser(req.body.username, req.body.password)
         .then(response => res.json(new ServerDataResponse(responseCodes.OK, response).generateResponseJson()))
         .catch(error => res.json(
-            new ServerErrorResponse(error.code, `Error - ${error.error}`)
+            new ServerErrorResponse(error.code, `Error - ${error}`)
             .generateResponseJson()
         ))
 })
@@ -42,16 +42,17 @@ router.put('/reset-password', (req, res) => {
 })
 
 router.post('/forgot-password-request', (req, res) => {
+    const { email } = req.body
     const mailOptions = {
         from: "Taskify",
-        to: [req.body?.email],
+        to: [email],
         subject: "Reset Password Request",
         html: `
             <h3>Password reset request</h3>
             <br/>
             <p>
-                This is a password reset request message for <u>${req.body?.email}</u>.<br/>
-                Click <a href="${environment?.baseUrl}${CREATE_PASSWORD_ROUTE}?fromUser=${req.body?.email}">here</a> to start password reset process
+                This is a password reset request message for <u>${email}</u>.<br/>
+                Click <a href="${environment?.baseUrl}${CREATE_PASSWORD_ROUTE}?fromUser=${email}">here</a> to start password reset process
                 <br/>
             </p>
         `
