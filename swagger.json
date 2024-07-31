@@ -354,7 +354,8 @@
             "application/json": {
               "example": {
                 "title": "Task Title",
-                "description": "This is the task's description"
+                "description": "This is the task's description",
+                "done": true
               }
             }
           }
@@ -525,6 +526,10 @@
           "description": {
             "type": "string",
             "example": "This is the task's description"
+          },
+          "done": {
+            "type": "boolean",
+            "example": true
           },
           "userId": {
             "type": "string",

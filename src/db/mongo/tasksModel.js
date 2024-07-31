@@ -22,49 +22,39 @@ const taskSchema = new mongoose.Schema({
     userId: {
         type: String,
         required: true
+    },
+    done: {
+        type: Boolean,
+        required: true,
+        default: false
     }
 })
 
 const taskModel = mongoose.model('tasks', taskSchema)
 
 async function fetchAllTasks(userId = "") {
-    try {
-        const searchFilter = userId === "" ? {} : { userId }
-        const tasks = await taskModel.find(searchFilter)
-        return mongoResultToJsonArray(tasks)
-    } catch (err) {
-        throw err
-    }
+    const searchFilter = userId === "" ? {} : { userId }
+    const tasks = await taskModel.find(searchFilter)
+    return mongoResultToJsonArray(tasks)
 }
 
-function fetchTaskById(taskId) {
-    return new Promise((resolve, reject) => {
-        taskModel.findById(taskId)
-            .then(task => resolve(mongoResultToJson(task)))
-            .catch(reject)
-    })
+async function fetchTaskById(taskId) {
+    return mongoResultToJson(await taskModel.findById(taskId))
 }
 
-function createNewTask(title, description, userId) {
-    return new Promise((resolve, reject) => {
-        taskModel.create({
-            title,
-            description,
-            userId
-        })
-            .then(task => resolve(mongoResultToJson(task)))
-            .catch(reject)
-    })
+async function createNewTask(title, description, userId) {
+    return mongoResultToJson(await taskModel.create({ title, description, userId }))
 }
 
 async function deleteTask(taskId) {
     return mongoResultToJson(await taskModel.findByIdAndDelete(taskId))
 }
 
-async function updateTask(taskId, title, description) {
+async function updateTask(taskId, title, description, done) {
     const taskToUpdate = await taskModel.findById(taskId)
     taskToUpdate.title = title
     taskToUpdate.description = description
+    taskToUpdate.done = done
     return taskToUpdate.save()
 }
 

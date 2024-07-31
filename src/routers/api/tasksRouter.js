@@ -92,8 +92,8 @@ router
      */
     .put((req, res) => {
         const { id } = req.params
-        const { title, description } = req.body
-        updateTask(id, title, description)
+        const { title, description, done } = req.body
+        updateTask(id, title, description, done)
             .then(_ => res.status(responseCodes.OK).json(new ServerDataResponse(responseCodes.OK, {}).generateResponseJson()))
             .catch(error => res.status(responseCodes.SERVER_ERROR).json(new ServerDataResponse(responseCodes.SERVER_ERROR, `Error - ${error}`)
                 .generateResponseJson())
