@@ -11,9 +11,17 @@ const taskSchema = new mongoose.Schema({
         immutable: true, 
         default: () => new Date().getTime() 
     },
-    text: { 
+    title: { 
         type: String, 
         required: true 
+    },
+    description: {
+        type: String,
+        required: true
+    },
+    userId: {
+        type: String,
+        required: true
     }
 })
 
@@ -37,10 +45,11 @@ function fetchTaskById(taskId) {
     })
 }
 
-function createNewTask(text, userId) {
+function createNewTask(title, description, userId) {
     return new Promise((resolve, reject) => {
         taskModel.create({
-            text,
+            title,
+            description,
             userId
         })
             .then(task => resolve(mongoResultToJson(task)))
@@ -52,9 +61,10 @@ async function deleteTask(taskId) {
     return mongoResultToJson(await taskModel.findByIdAndDelete(taskId))
 }
 
-async function updateTask(taskId, data) {
+async function updateTask(taskId, title, description) {
     const taskToUpdate = await taskModel.findById(taskId)
-    taskToUpdate.text = data.text
+    taskToUpdate.title = title
+    taskToUpdate.description = description
     return taskToUpdate.save()
 }
 

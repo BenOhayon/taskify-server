@@ -257,7 +257,8 @@
           "content": {
             "application/json": {
               "example": {
-                "text": "This is a task",
+                "title": "Task Title",
+                "description": "This is the task's description",
                 "userId": "663bf12b398d68a4be0a70af"
               }
             }
@@ -329,7 +330,7 @@
           }
         }
       },
-      "post": {
+      "put": {
         "tags": [
           "Tasks"
         ],
@@ -347,6 +348,17 @@
             "description": "The ID of the requested task"
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "title": "Task Title",
+                "description": "This is the task's description"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Task was updated",
@@ -506,9 +518,13 @@
             "type": "string",
             "example": "6631362f53c1fd1465c77f5a"
           },
-          "text": {
+          "title": {
             "type": "string",
-            "example": "blabla"
+            "example": "Task Title"
+          },
+          "description": {
+            "type": "string",
+            "example": "This is the task's description"
           },
           "userId": {
             "type": "string",

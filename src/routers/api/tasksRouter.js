@@ -10,7 +10,6 @@ const {
 const responseCodes = require('../../responseCodes')
 const ServerErrorResponse = require('../../models/ServerErrorResponse')
 const ServerDataResponse = require('../../models/ServerDataResponse');
-const environment = require('../../config')
 
 /**
  * Fetches all the tasks of a user whose ID is 'userId'. If no ID was specified, it fetches all the tasks.
@@ -36,14 +35,15 @@ router.get("/", (req, res) => {
  * [POST] /api/tasks
  * 
  * Body Parameters:
- * @param text - The text of the new task
+ * @param title - The title of the new task
+ * @param description - The description of the new task
  * @param userId - The ID of the user created the task
  * 
  * For more info and testing, see {@link http://localhost:3000/api/docs}
  */
 router.post("/", (req, res) => {
-    const { text, userId } = req.body
-    createNewTask(text, userId)
+    const { title, description, userId } = req.body
+    createNewTask(title, description, userId)
         .then(task => res.json(new ServerDataResponse(responseCodes.CREATED, task).generateResponseJson()))
         .catch(error => res.json(
             new ServerErrorResponse(responseCodes.SERVER_ERROR, `Error - ${error}`)
@@ -84,11 +84,16 @@ router
      * Path Parameters:
      * @param id - The ID of the requested task
      * 
+     * Body Parameters:
+     * @param title - The title of the requested task
+     * @param description - The description of the requested task
+     * 
      * For more info and testing, see {@link http://localhost:3000/api/docs}
      */
     .put((req, res) => {
-        const { id, body } = req.body
-        updateTask(id, body)
+        const { id } = req.params
+        const { title, description } = req.body
+        updateTask(id, title, description)
             .then(_ => res.status(responseCodes.OK).json(new ServerDataResponse(responseCodes.OK, {}).generateResponseJson()))
             .catch(error => res.status(responseCodes.SERVER_ERROR).json(new ServerDataResponse(responseCodes.SERVER_ERROR, `Error - ${error}`)
                 .generateResponseJson())
